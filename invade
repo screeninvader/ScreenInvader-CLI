@@ -1,13 +1,15 @@
 #!/bin/bash
 # Remote CLI for ScreenInvader by @burnoutberni
 
-function add() { curl -s "http://10.20.30.40/cgi-bin/show?$1" -o /dev/null; }
-function play() { curl -s "http://10.20.30.40/cgi-bin/trigger?playerPause" -o /dev/null; }
-function pause() { curl -s "http://10.20.30.40/cgi-bin/trigger?playerPause" -o /dev/null; }
-function stop() { curl -s "http://10.20.30.40/cgi-bin/trigger?playerClose" -o /dev/null; }
+screeninvaderurl="http://10.20.30.40"
+
+function add() { curl -s "$screeninvaderurl/cgi-bin/show?$1" -o /dev/null; }
+function play() { curl -s "$screeninvaderurl/cgi-bin/trigger?playerPause" -o /dev/null; }
+function pause() { curl -s "$screeninvaderurl/cgi-bin/trigger?playerPause" -o /dev/null; }
+function stop() { curl -s "$screeninvaderurl/cgi-bin/trigger?playerClose" -o /dev/null; }
 function volume() {
 	if [ "$1" -le "100" -a "$1" -ge "0" ]; then
-		curl "http://10.20.30.40/cgi-bin/set?/sound/volume=$1"
+		curl "$screeninvaderurl/cgi-bin/set?/sound/volume=$1"
 		echo "[SUCCESS] Volume set to $1"
 	else
 		echo "[ERROR] Set volume to a value between 0 and 100"
