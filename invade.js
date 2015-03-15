@@ -61,12 +61,6 @@ function invade(cmd, val) {
   if (cmd === "previous") command = screeninvader + "/cgi-bin/trigger?playerPrevious";
 
   http.get(command, function(res) {
-    if (val) {
-      console.log(cmd + " " + val);
-    } else {
-      console.log(cmd);
-    }
-
     if (cmd === "list") {
       var body = "";
 
@@ -80,9 +74,18 @@ function invade(cmd, val) {
           console.log(i + " " + playlist.items[i].title);
         }
       });
+
+      return true;
+    } else if (val) {
+      console.log(cmd + " " + val);
+      return true;
+    } else {
+      console.log(cmd);
+      return true;
     }
   }).on('error', function(e) {
     console.error("Got error: " + e.message);
+    return false;
   });
 }
 
