@@ -7,6 +7,7 @@
 var program = require('commander');
 var http = require('http');
 var validUrl = require('valid-url');
+var promptly = require('promptly');
 
 /**
  * Set ScreenInvader url
@@ -93,6 +94,7 @@ program
   .version('0.0.1')
   .description('Remote CLI for the ScreenInvader')
   .option('-a, --add <url>', 'Add item to ScreenInvader', verifyUrl)
+  .option('-s, --search <search term>', 'Search on Youtube')
   .option('-v, --volume <0>..<100>', 'Set ScreenInvader volume', verifyPercentage)
   .option('-j, --jump <0>..<i>', 'Jump to specific item in playlist', verifyPosInt)
   .option('-r, --remove <0>..<i>', 'Remove specific item from playlist', verifyPosInt)
@@ -111,4 +113,31 @@ if (program.play) invade("play");
 if (program.next) invade("next");
 if (program.previous) invade("previous");
 
+if (program.search) {
+  var j = 0;
+  http.get("http://gdata.youtube.com/feeds/api/videos?alt=json&max-results=8&q="+program.search+"&type=video", function(res) {
+    var body = "";
+
+    res.on('data', function (chunk) {
+      body += chunk;
+    });
+
+    res.on('end', function() {
+      var query = JSON.parse(body);
+      for (var i in query.feed.entry) {
+        console.log(i + " " + query.feed.entry[i].title.$t);
+        j = i;
+      }
+      promptly.prompt('Enter number between 0 and ' + j + ': ', function (err, value) {
+        if (value <= j && value >= 0) {
+          console.log("add " + query.feed.entry[value].title.$t);
+          invade("add", query.feed.entry[value].link[0].href);
+        } else {
+          console.warn("not a valid search item");
+          return false;
+        }
+      });
+    });
+  });
+}
 
