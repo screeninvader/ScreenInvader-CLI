@@ -23,7 +23,7 @@ function verifyPosInt(val) {
   if (val >= 0) {
     return val;
   } else {
-    console.warn("only values bigger than 0");
+    console.error("only values bigger than 0");
     return false;
   }
 }
@@ -32,7 +32,7 @@ function verifyPercentage(val) {
   if (val <= 100 & val >= 0) {
     return val;
   } else {
-    console.warn("only values between 0 and 100");
+    console.error("only values between 0 and 100");
     return false;
   }
 }
@@ -41,7 +41,7 @@ function verifyUrl(val) {
   if (validUrl.isUri(val)){
     return val;
   } else {
-    console.warn("enter a URL");
+    console.error("enter a URL");
     return false;
   }
 }
@@ -51,7 +51,7 @@ function verifyUrl(val) {
  */
 
 function invade(cmd, val) {
-  var command = "none";
+  var command = false;
   if (cmd === "add") command = screeninvader + "/cgi-bin/show?" + val;
   if (cmd === "volume") command = screeninvader + "/cgi-bin/set?/sound/volume=" + val;
   if (cmd === "jump") command = screeninvader + "/cgi-bin/playlist_jump?" + val;
@@ -61,7 +61,7 @@ function invade(cmd, val) {
   if (cmd === "next") command = screeninvader + "/cgi-bin/trigger?playerNext";
   if (cmd === "previous") command = screeninvader + "/cgi-bin/trigger?playerPrevious";
 
-  http.get(command, function(res) {
+  http.request(command, function(res) {
     if (cmd === "list") {
       var body = "";
 
@@ -75,19 +75,14 @@ function invade(cmd, val) {
           console.log(i + " " + playlist.items[i].title);
         }
       });
-
-      return true;
     } else if (val) {
       console.log(cmd + " " + val);
-      return true;
     } else {
       console.log(cmd);
-      return true;
     }
   }).on('error', function(e) {
     console.error("Got error: " + e.message);
-    return false;
-  });
+  }).end();
 }
 
 program
@@ -133,7 +128,7 @@ if (program.search) {
           console.log("add " + query.feed.entry[value].title.$t);
           invade("add", query.feed.entry[value].link[0].href);
         } else {
-          console.warn("not a valid search item");
+          console.error("not a valid search item");
           return false;
         }
       });

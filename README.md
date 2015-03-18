@@ -3,10 +3,14 @@ Remote CLI for the ScreenInvader
 
 This is a remote CLI for the [ScreenInvader](https://github.com/screeninvader/ScreenInvader). It's written in Node and depends on [Commander.js](https://github.com/tj/commander.js), [valid-url](https://www.npmjs.com/package/valid-url) and [promptly](https://www.npmjs.com/package/promptly).
 
+## Installation
+
+`npm install -g invade`
+
 ## Usage
 
 ``` 
- $ ./invade.js -h
+ $ invade -h
 
    Usage: invade [options]
 
