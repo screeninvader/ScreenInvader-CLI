@@ -62,31 +62,31 @@ function invade(cmd, val) {
   if (cmd === "previous") command = screeninvader + "/cgi-bin/trigger?playerPrevious";
 
   http.request(command, function(res) {
-    if (cmd === "list") {
-      var body = "";
+    var body = "";
 
-      res.on('data', function (chunk) {
-        body += chunk;
-      });
+    res.on('data', function (chunk) {
+      body += chunk;
+    });
 
-      res.on('end', function() {
+    res.on('end', function() {
+      if (cmd === "list") {
         var playlist = JSON.parse(body);
         for (var i in playlist.items) {
           console.log(i + " " + playlist.items[i].title);
         }
-      });
-    } else if (val) {
-      console.log(cmd + " " + val);
-    } else {
-      console.log(cmd);
-    }
+      } else if (val) {
+        console.log(cmd + " " + val);
+      } else {
+        console.log(cmd);
+      }
+    });
   }).on('error', function(e) {
     console.error("Got error: " + e.message);
   }).end();
 }
 
 program
-  .version('0.0.1')
+  .version('0.0.2')
   .description('Remote CLI for the ScreenInvader')
   .option('-a, --add <url>', 'Add item to ScreenInvader', verifyUrl)
   .option('-s, --search <search term>', 'Search on Youtube')
