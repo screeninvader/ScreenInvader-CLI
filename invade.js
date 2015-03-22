@@ -69,6 +69,7 @@ function invade(cmd, val) {
   if (cmd === "list") command = screeninvader + "/cgi-bin/get?/playlist/.";
   if (cmd === "play") command = screeninvader + "/cgi-bin/trigger?playerPause";
   if (cmd === "next") command = screeninvader + "/cgi-bin/trigger?playerNext";
+  if (cmd === "close") command = screeninvader + "/cgi-bin/trigger?browserClose";
   if (cmd === "previous") command = screeninvader + "/cgi-bin/trigger?playerPrevious";
   if (cmd === "current") command = screeninvader + "/cgi-bin/get?/playlist/index";
   if (cmd === "light") {
@@ -119,7 +120,7 @@ function invade(cmd, val) {
 }
 
 program
-  .version('0.0.3')
+  .version('0.0.4')
   .description('Remote CLI for the ScreenInvader')
   .option('-a, --add <url>', 'Add item to ScreenInvader', verifyUrl)
   .option('-s, --search <search term>', 'Search on Youtube')
@@ -131,7 +132,8 @@ program
   .option('-p, --play', 'Play/pause')
   .option('-n, --next', 'Jump forward one item on the playlist')
   .option('-P, --previous', 'Jump back one item on the playlist')
-  .option('-c, --current', 'Get id of the currently played item')
+  .option('-c, --close', 'Close browser/overlayed pictures')
+  .option('-C, --current', 'Get id of the currently played item')
   .parse(process.argv);
 
 if (program.add) invade("add", program.add);
@@ -144,6 +146,7 @@ if (program.play) invade("play");
 if (program.next) invade("next");
 if (program.previous) invade("previous");
 if (program.current) invade("current");
+if (program.close) invade("close");
 
 if (program.search) {
   var j = 0;
