@@ -1,6 +1,6 @@
 {
   "name": "invade",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A command-line interface for the multiparty music-player 'screeninvader'",
   "author": "Burnoutberni <hello@nini.su>",
   "contributors": [{
