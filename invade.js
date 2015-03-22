@@ -10,10 +10,11 @@ var validUrl = require('valid-url');
 var promptly = require('promptly');
 
 /**
- * Set ScreenInvader url
+ * Set ScreenInvader/slackomatic url
  */
 
 var screeninvader = "http://10.20.30.40";
+var slackomatic = "http://10.20.30.90:8080";
 
 /**
  * Sanity checks for input values
@@ -33,6 +34,15 @@ function verifyPercentage(val) {
     return val;
   } else {
     console.error("only values between 0 and 100");
+    return false;
+  }
+}
+
+function verifyLight(val) {
+  if (val <= 4 & val >= 0) {
+    return val;
+  } else {
+    console.error("only values between 0 and 4");
     return false;
   }
 }
@@ -60,6 +70,26 @@ function invade(cmd, val) {
   if (cmd === "play") command = screeninvader + "/cgi-bin/trigger?playerPause";
   if (cmd === "next") command = screeninvader + "/cgi-bin/trigger?playerNext";
   if (cmd === "previous") command = screeninvader + "/cgi-bin/trigger?playerPrevious";
+  if (cmd === "current") command = screeninvader + "/cgi-bin/get?/playlist/index";
+  if (cmd === "light") {
+    switch (val) {
+      case "0":
+        command = slackomatic + "/slackomatic/rooms/lounge/lighting/off";
+        break;
+      case "1":
+        command = slackomatic + "/slackomatic/rooms/lounge/lighting/super_chillig";
+        break;
+      case "2":
+        command = slackomatic + "/slackomatic/rooms/lounge/lighting/chillig";
+        break;
+      case "3":
+        command = slackomatic + "/slackomatic/rooms/lounge/lighting/normal";
+        break;
+      case "4":
+        command = slackomatic + "/slackomatic/rooms/lounge/lighting/chinese_sweatshop";
+        break;
+    }
+  }
 
   http.request(command, function(res) {
     var body = "";
@@ -74,6 +104,9 @@ function invade(cmd, val) {
         for (var i in playlist.items) {
           console.log(i + " " + playlist.items[i].title);
         }
+      } else if (cmd === "current") {
+        var result = JSON.parse(body);
+        console.log("currently played item: " + result.playlist.index);
       } else if (val) {
         console.log(cmd + " " + val);
       } else {
@@ -93,20 +126,24 @@ program
   .option('-v, --volume <0>..<100>', 'Set ScreenInvader volume', verifyPercentage)
   .option('-j, --jump <0>..<i>', 'Jump to specific item in playlist', verifyPosInt)
   .option('-r, --remove <0>..<i>', 'Remove specific item from playlist', verifyPosInt)
+  .option('-L, --light <0>..<4>', 'Set lighting via slackomatic', verifyLight)
   .option('-l, --list', 'Shows current playlist')
   .option('-p, --play', 'Play/pause')
   .option('-n, --next', 'Jump forward one item on the playlist')
   .option('-P, --previous', 'Jump back one item on the playlist')
+  .option('-c, --current', 'Get id of the currently played item')
   .parse(process.argv);
 
 if (program.add) invade("add", program.add);
 if (program.volume) invade("volume", program.volume);
 if (program.jump) invade("jump", program.jump);
 if (program.remove) invade("remove", program.remove);
+if (program.light) invade("light", program.light);
 if (program.list) invade("list");
 if (program.play) invade("play");
 if (program.next) invade("next");
 if (program.previous) invade("previous");
+if (program.current) invade("current");
 
 if (program.search) {
   var j = 0;
