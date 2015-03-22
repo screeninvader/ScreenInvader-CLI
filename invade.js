@@ -119,7 +119,7 @@ function invade(cmd, val) {
 }
 
 program
-  .version('0.0.2')
+  .version('0.0.3')
   .description('Remote CLI for the ScreenInvader')
   .option('-a, --add <url>', 'Add item to ScreenInvader', verifyUrl)
   .option('-s, --search <search term>', 'Search on Youtube')
