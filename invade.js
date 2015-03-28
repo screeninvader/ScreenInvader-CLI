@@ -63,7 +63,11 @@ function verifyUrl(val) {
 function invade(cmd, val) {
   var command = false;
   if (cmd === "add") command = screeninvader + "/cgi-bin/show?" + val;
-  if (cmd === "volume") command = screeninvader + "/cgi-bin/set?/sound/volume=" + val;
+  if (cmd === "volume" && val === true) {
+    command = screeninvader + "/cgi-bin/get?/sound/volume";
+  } else if (cmd === "volume") {
+    command = screeninvader + "/cgi-bin/set?/sound/volume=" + val;
+  }
   if (cmd === "jump") command = screeninvader + "/cgi-bin/playlist_jump?" + val;
   if (cmd === "remove") command = screeninvader + "/cgi-bin/playlist_remove?" + val;
   if (cmd === "list") command = screeninvader + "/cgi-bin/get?/playlist/.";
@@ -108,6 +112,9 @@ function invade(cmd, val) {
       } else if (cmd === "current") {
         var result = JSON.parse(body);
         console.log("currently played item: " + result.playlist.index);
+      } else if (cmd === "volume" && val === true) {
+        var result = JSON.parse(body);
+        console.log("current volume: " + result.sound.volume)
       } else if (val) {
         console.log(cmd + " " + val);
       } else {
@@ -120,11 +127,11 @@ function invade(cmd, val) {
 }
 
 program
-  .version('0.0.4')
+  .version('0.0.5')
   .description('Remote CLI for the ScreenInvader')
   .option('-a, --add <url>', 'Add item to ScreenInvader', verifyUrl)
   .option('-s, --search <search term>', 'Search on Youtube')
-  .option('-v, --volume <0>..<100>', 'Set ScreenInvader volume', verifyPercentage)
+  .option('-v, --volume [0]..[100]', 'Set/Get ScreenInvader volume', verifyPercentage)
   .option('-j, --jump <0>..<i>', 'Jump to specific item in playlist', verifyPosInt)
   .option('-r, --remove <0>..<i>', 'Remove specific item from playlist', verifyPosInt)
   .option('-L, --light <0>..<4>', 'Set lighting via slackomatic', verifyLight)
