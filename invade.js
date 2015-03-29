@@ -106,8 +106,13 @@ function invade(cmd, val) {
     res.on('end', function() {
       if (cmd === "list") {
         var playlist = JSON.parse(body);
+        var current = playlist.index;
         for (var i in playlist.items) {
-          console.log(i + " " + playlist.items[i].title);
+          if (i === current) {
+            console.log(i + " ▶ " + playlist.items[i].title);
+          } else {
+            console.log(i + " " + playlist.items[i].title);
+          }
         }
       } else if (cmd === "current") {
         var result = JSON.parse(body);
@@ -127,7 +132,7 @@ function invade(cmd, val) {
 }
 
 program
-  .version('0.0.5')
+  .version('0.0.6')
   .description('Remote CLI for the ScreenInvader')
   .option('-a, --add <url>', 'Add item to ScreenInvader', verifyUrl)
   .option('-s, --search <search term>', 'Search on Youtube')
